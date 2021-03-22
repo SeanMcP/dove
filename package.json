@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "tsc -w --outDir lib/ src/store.ts src/elements.ts",
+        "dev": "tsc -w --outDir lib/ src/store.ts src/elements.ts src/action-listener.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],

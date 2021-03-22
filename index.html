@@ -19,13 +19,14 @@
       <button>Submit</button>
     </form>
     <hr />
-    <button data-type="decrement">Decrement</button>
+    <button data-dove="decrementButton" data-type="decrement" data-payload="2">Decrement</button>
     <div id="display" style="font-size: 2rem; font-weight: bold">0</div>
-    <button data-type="increment">Increment</button>
+    <button data-dove="incrementButton" data-type="increment">Increment</button>
     <br />
     <button data-type="reset">Reset</button>
     <hr />
     <code></code>
+    <script src="lib/action-listener.js"></script>
     <script src="lib/elements.js"></script>
     <script src="lib/store.js"></script>
     <script>
@@ -56,12 +57,7 @@
       }
 
       const store = createStore(initialState, reducer);
-
-      document.querySelectorAll("button[data-type]").forEach((node) => {
-        node.addEventListener("click", (e) => {
-          store.dispatch({ type: node.dataset.type });
-        });
-      });
+      initializeActionListener(store);
 
       store.subscribe(
         function renderCurrentCount(state) {
