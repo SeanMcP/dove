@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>State Library</title>
+  </head>
+  <body>
+    <h1>Hello!</h1>
+    <form>
+      <label>
+        <b>Name</b>
+        <input name="name" value="" />
+      </label>
+      <button>Submit</button>
+    </form>
+    <hr />
+    <button data-type="decrement">Decrement</button>
+    <div id="display" style="font-size: 2rem; font-weight: bold">0</div>
+    <button data-type="increment">Increment</button>
+    <br />
+    <button data-type="reset">Reset</button>
+    <hr />
+    <code></code>
+    <script src="index.js"></script>
+    <script>
+      const initialState = {
+        name: null,
+        count: 0,
+      };
+
+      function reducer(state = initialState, action) {
+        switch (action.type) {
+          case "decrement": {
+            return { ...state, count: state.count - (action.payload || 1) };
+          }
+          case "increment": {
+            return { ...state, count: state.count + (action.payload || 1) };
+          }
+          case "reset": {
+            return initialState;
+          }
+          case "set display name": {
+            return { ...state, name: action.payload };
+          }
+          default: {
+            return state;
+          }
+        }
+      }
+
+      const store = createStore(initialState, reducer);
+
+      document.querySelectorAll("button[data-type]").forEach((node) => {
+        node.addEventListener("click", (e) => {
+          store.dispatch({ type: node.dataset.type });
+        });
+      });
+
+      store.subscribe(
+        function renderCurrentCount(state) {
+          console.count("renderCurrentCount");
+          document.getElementById("display").textContent = state.count;
+          if (state.count === 10) store.unsubscribe(renderCurrentCount);
+        },
+        ["count"]
+      );
+
+      document.querySelector("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const name = new FormData(event.target).get("name");
+
+        store.dispatch({ type: "set display name", payload: name });
+
+        event.target.reset();
+      });
+
+      store.subscribe(
+        function renderDisplayName(state) {
+          console.count("renderDisplayName");
+          document.querySelector("h1").textContent = `Hello ${state.name}!`;
+        },
+        ["name"]
+      );
+
+      store.subscribe(function visualizeState(state) {
+        console.count("visualizeState");
+        document.querySelector("code").textContent = JSON.stringify(
+          state,
+          null,
+          2
+        );
+      });
+    </script>
+  </body>
+</html>
