@@ -3,11 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>State Library</title>
+    <title>Dove</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕊</text></svg>"
+    />
   </head>
   <body>
     <h1>Hello!</h1>
-    <form>
+    <form data-dove="nameForm">
       <label>
         <b>Name</b>
         <input name="name" value="" />
@@ -22,8 +26,10 @@
     <button data-type="reset">Reset</button>
     <hr />
     <code></code>
-    <script src="index.js"></script>
+    <script src="lib/elements.js"></script>
+    <script src="lib/store.js"></script>
     <script>
+      const elements = createElements();
       const initialState = {
         name: null,
         count: 0,
@@ -66,7 +72,7 @@
         ["count"]
       );
 
-      document.querySelector("form").addEventListener("submit", (event) => {
+      elements.nameForm.addEventListener("submit", (event) => {
         event.preventDefault();
 
         const name = new FormData(event.target).get("name");
