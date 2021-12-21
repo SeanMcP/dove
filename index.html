@@ -10,7 +10,7 @@
     />
   </head>
   <body>
-    <h1>Hello!</h1>
+    <h1 data-dove="heading">Hello!</h1>
     <form data-dove="nameForm">
       <label>
         <b>Name</b>
@@ -19,13 +19,20 @@
       <button>Submit</button>
     </form>
     <hr />
-    <button data-dove="decrementButton" data-type="decrement" data-payload="2">Decrement</button>
+    <button data-dove="decrementButton" data-type="decrement" data-payload="2">
+      Decrement
+    </button>
     <div id="display" style="font-size: 2rem; font-weight: bold">0</div>
     <button data-dove="incrementButton" data-type="increment">Increment</button>
     <br />
-    <button data-type="reset">Reset</button>
+    <button data-dove="resetButton" data-type="reset">Reset</button>
     <hr />
-    <code></code>
+    <code data-dove="code"></code>
+    <hr />
+    <button data-dove="countButton" data-type="just keep counting">
+      Count
+    </button>
+    <code data-dove="count"></code>
     <script src="lib/action-listener.js"></script>
     <script src="lib/elements.js"></script>
     <script src="lib/store.js"></script>
@@ -56,8 +63,9 @@
         }
       }
 
-      const store = createStore(initialState, reducer);
-      initializeActionListener(store);
+      const store = createStore("app", initialState, reducer);
+      const listener = initializeActionListener();
+      listener.add(store.dispatch);
 
       store.subscribe(
         function renderCurrentCount(state) {
@@ -81,18 +89,24 @@
       store.subscribe(
         function renderDisplayName(state) {
           console.count("renderDisplayName");
-          document.querySelector("h1").textContent = `Hello ${state.name}!`;
+          elements.heading.textContent = `Hello ${state.name}!`;
         },
         ["name"]
       );
 
       store.subscribe(function visualizeState(state) {
         console.count("visualizeState");
-        document.querySelector("code").textContent = JSON.stringify(
-          state,
-          null,
-          2
-        );
+        elements.code.textContent = JSON.stringify(state, null, 2);
+      });
+
+      const storeTwo = createStore("two", { count: 0 }, (state) => ({
+        count: state.count + 1,
+      }));
+      listener.add(storeTwo.dispatch);
+
+      storeTwo.subscribe(function updateCount(state) {
+        console.count("updateCount");
+        elements.count.textContent = state.count;
       });
     </script>
   </body>
